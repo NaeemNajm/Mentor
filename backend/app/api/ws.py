@@ -11,7 +11,8 @@ class ConnectionManager:
         self.active_connections.append(websocket)
 
     def disconnect(self, websocket: WebSocket):
-        self.active_connections.remove(websocket)
+        if websocket in self.active_connections:
+            self.active_connections.remove(websocket)
 
     async def broadcast(self, message: str):
         for connection in list(self.active_connections):
@@ -22,13 +23,16 @@ class ConnectionManager:
 
 manager = ConnectionManager()
 
-@router.websocket("/ws/updates")
+@router.websocket("/updates")
 async def websocket_endpoint(websocket: WebSocket):
+    """WebSocket endpoint for broadcasting realtime updates.
+    Final route will be /api/ws/updates because the router is included with prefix "/api/ws" in main.py.
+    """
     await manager.connect(websocket)
     try:
         while True:
             data = await websocket.receive_text()
-            # echo or broadcast
+            # Echo/broadcast received payload to all listeners
             await manager.broadcast(data)
     except WebSocketDisconnect:
         manager.disconnect(websocket)

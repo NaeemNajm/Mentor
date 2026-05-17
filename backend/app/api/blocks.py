@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from typing import List
+from typing import List, Optional
 from sqlmodel import Session, select
 from ..models import Block
 from ..db import engine
@@ -13,6 +13,12 @@ class BlockCreate(BaseModel):
     title: str
     start_iso: datetime
     end_iso: datetime
+
+class BlockUpdate(BaseModel):
+    title: Optional[str] = None
+    start_iso: Optional[datetime] = None
+    end_iso: Optional[datetime] = None
+    completed: Optional[bool] = None
 
 @router.post("/", response_model=Block)
 def create_block(data: BlockCreate):
@@ -38,12 +44,13 @@ def get_block(block_id: int):
     return block
 
 @router.patch("/{block_id}", response_model=Block)
-def update_block(block_id: int, patch: dict):
+def update_block(block_id: int, patch: BlockUpdate):
     with Session(engine) as session:
         block = session.get(Block, block_id)
         if not block:
             raise HTTPException(status_code=404, detail="Block not found")
-        for k, v in patch.items():
+        update_data = patch.dict(exclude_unset=True)
+        for k, v in update_data.items():
             if hasattr(block, k):
                 setattr(block, k, v)
         session.add(block)

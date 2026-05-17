@@ -1,0 +1,44 @@
+/* Basic styling for Mentor MVP scaffold */
+
+html, body {
+  height: 100%;
+}
+body {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  margin: 0;
+  padding: 20px;
+  background: #f7fafc;
+  color: #0f172a;
+}
+
+h1 {
+  font-size: 1.5rem;
+  margin: 0 0 1rem 0;
+}
+
+/* Scheduler grid tweaks */
+
+.scheduler-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.slot {
+  border: 1px solid #e6eef2;
+  padding: 10px;
+  min-height: 60px;
+  background: #fff;
+  border-radius: 6px;
+}
+
+.slot .time {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.slot .title {
+  margin-top: 6px;
+  font-weight: 600;
+  color: #0f172a;
+}
